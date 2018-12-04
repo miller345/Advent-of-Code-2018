@@ -21,12 +21,23 @@ function day3(input) {
     for (x = rect.x; x < rect.x + rect.width; x++) {
       for (y = rect.y; y < rect.y + rect.height; y++) {
         let key = `${x},${y}`;
-        coordsFreq[key] = coordsFreq[key] ? coordsFreq[key] + 1 : 1;
+        if (coordsFreq[key]) {
+          // already overlap
+          coordsFreq[key] = [...coordsFreq[key], rect.id];
+        } else {
+          // no current overlap
+          coordsFreq[key] = [rect.id];
+        }
       }
     }
   });
   let dups = Object.keys(coordsFreq)
-    .filter(key => coordsFreq[key] > 1)
+    .filter(key => coordsFreq[key].length > 1)
     .map(key => coordsFreq[key]);
   console.log("Part 1:", dups.length);
+  let overlappingIds = dups.flat(); // has dups
+  let noOverlaps = rects
+    .map(r => r.id)
+    .filter(id => !overlappingIds.includes(id));
+  console.log("Part 2:", noOverlaps);
 }
