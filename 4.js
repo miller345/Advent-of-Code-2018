@@ -58,4 +58,15 @@ function day4(input) {
   });
   //console.log(JSON.stringify(days));
   console.log(days);
+  let guards = Object.keys(days).reduce((obj, key) => {
+    let day = days[key];
+    let total = day.asleep.reduce((total, range) => {
+      return total + (range[1] - range[0]);
+    }, 0);
+    return {
+      ...obj,
+      [day.id]: obj[day.id] ? obj[day.id] + total : total
+    };
+  }, {});
+  console.log(guards);
 }
