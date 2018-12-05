@@ -31,4 +31,31 @@ function day4(input) {
     })
     .filter(e => e.event !== "begin"); // just awake/sleep events
   console.log(events);
+  let days = {};
+  let current = {
+    id: null,
+    day: null
+  };
+  events.forEach(e => {
+    current.day = e.date.split(" ")[0];
+    current.id = e.id;
+    let minute = parseInt(e.date.split(" ")[1].split(":")[1], 10);
+    // first event
+    if (!days[current.day]) {
+      days[current.day] = {
+        id: current.id,
+        asleep: []
+      };
+    }
+    if (e.event === "asleep") {
+      days[current.day].asleep.push([minute]);
+    }
+    if (e.event === "awake") {
+      days[current.day].asleep[days[current.day].asleep.length - 1].push(
+        minute - 1
+      );
+    }
+  });
+  //console.log(JSON.stringify(days));
+  console.log(days);
 }
