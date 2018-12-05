@@ -30,7 +30,7 @@ function day4(input) {
       };
     })
     .filter(e => e.event !== "begin"); // just awake/sleep events
-  console.log(events);
+  //console.log(events);
   let days = {};
   let current = {
     id: null,
@@ -57,7 +57,7 @@ function day4(input) {
     }
   });
   //console.log(JSON.stringify(days));
-  console.log(days);
+  //console.log(days);
   let guards = Object.keys(days).reduce((obj, key) => {
     let day = days[key];
     let total = day.asleep.reduce((total, range) => {
@@ -65,8 +65,42 @@ function day4(input) {
     }, 0);
     return {
       ...obj,
-      [day.id]: obj[day.id] ? obj[day.id] + total : total
+      [day.id]: {
+        asleep: [...(obj[day.id] ? obj[day.id].asleep : []), ...day.asleep],
+        total: obj[day.id] ? obj[day.id].total + total : total
+      }
     };
   }, {});
-  console.log(guards);
+  //console.log(JSON.stringify(guards));
+  let maxTotal = Math.max(...Object.values(guards).map(o => o.total));
+  //console.log(maxTotal);
+  let maxTotalId = parseInt(
+    Object.keys(guards).filter(id => guards[id].total === maxTotal),
+    10
+  );
+  let maxTotalAsleep = guards[maxTotalId].asleep;
+  //console.log(maxTotalId, maxTotalAsleep);
+  let mins = maxTotalAsleep
+    .map(arr => range(arr[0], arr[1]))
+    .flat()
+    .reduce((obj, m) => {
+      return {
+        ...obj,
+        [m]: obj[m] ? obj[m] + m : m
+      };
+    }, {});
+  //console.log(mins);
+  let maxMins = Math.max(...Object.values(mins));
+  console.log(maxMins);
+  let id = parseInt(Object.keys(mins).filter(m => mins[m] === maxMins), 10);
+  console.log(id);
+  console.log("Part 1:", id * maxMins); //wrong :(
+}
+
+function range(from, to) {
+  var arr = [];
+  for (let i = from; i <= to; i++) {
+    arr.push(i);
+  }
+  return arr;
 }
