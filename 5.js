@@ -1,15 +1,34 @@
 let fs = require("fs");
 
 fs.readFile("./inputs/day5.txt", "utf8", function(err, data) {
-  day5(data);
+  let arr = data.split("");
+  day5part1(arr);
+  day5part2(arr);
 });
 
-function day5(input) {
-  let arr = input.split("");
+function day5part1(arr) {
+  arr = processPolymer(arr);
+  console.log("Part 1:", arr.length);
+}
+
+function day5part2(arr) {
+  let unitTypes = [...new Set(arr.map(v => v.toLowerCase()))];
+  let variations = unitTypes.reduce((obj, unitType) => {
+    let filteredArr = arr.filter(v => v.toLowerCase() !== unitType);
+    return {
+      ...obj,
+      [unitType]: processPolymer(filteredArr).length
+    };
+  }, {});
+  let minVal = Math.min(...Object.values(variations));
+  console.log("Part2:", minVal);
+}
+
+function processPolymer(arr) {
   while (findNextReaction(arr) !== null) {
     arr = react(arr, findNextReaction(arr));
   }
-  console.log("Part 1:", arr.length);
+  return arr;
 }
 
 // remove index and index + 1
